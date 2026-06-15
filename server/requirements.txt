@@ -1,0 +1,28 @@
+# PC Media Remote - Windows 服务端依赖
+# Python 3.12+
+
+# Web 框架
+Flask==3.1.0
+flask-sock==0.7.0
+waitress==3.0.2
+
+# 系统音量控制
+pycaw==20240210
+
+# 媒体键模拟 (系统级多媒体按键)
+pyautogui==0.9.54
+
+# 系统信息 + 窗口检测
+psutil==6.1.0
+
+# Windows API (锁屏/关机/窗口标题/媒体信息)
+pywin32==310
+
+# CORS 支持
+flask-cors==5.0.0
+
+# 二维码生成
+qrcode[pil]==7.4.2
+
+# Windows 官方 SDK — SMTC 媒体信息 (歌曲时长/进度)
+winsdk

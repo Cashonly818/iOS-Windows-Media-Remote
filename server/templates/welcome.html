@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC Media Remote - 扫码连接</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #1c1c1e;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .container {
+            padding: 40px 20px;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        p {
+            color: #999;
+            font-size: 15px;
+            margin-bottom: 32px;
+        }
+        .qr-box {
+            display: inline-block;
+            background: #fff;
+            padding: 16px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+        .qr-box img {
+            width: 260px;
+            height: 260px;
+            display: block;
+        }
+        .url {
+            margin-top: 24px;
+            font-size: 18px;
+            font-family: 'SF Mono', 'Consolas', monospace;
+            color: #0A84FF;
+            word-break: break-all;
+        }
+        .hint {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PC Media Remote</h1>
+        <p>用 iPhone 相机扫描二维码即可连接</p>
+        <div class="qr-box">
+            <img src="/qrcode.png" alt="QR Code">
+        </div>
+        <div class="url">{{ url }}</div>
+        <div class="hint">扫码后 Safari 自动打开 → 直接进入遥控界面<br>建议添加到主屏幕作为独立 App 使用</div>
+    </div>
+</body>
+</html>

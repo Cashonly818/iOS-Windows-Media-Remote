@@ -1,0 +1,26 @@
+{
+    "name": "PC Media Remote",
+    "short_name": "PC Remote",
+    "description": "iPhone 远程控制 Windows 电脑媒体播放",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#000000",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "/static/icons/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/static/icons/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": ["utilities", "music", "remote"],
+    "lang": "zh-CN"
+}

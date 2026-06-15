@@ -1,0 +1,23 @@
+# Build
+dist/
+build/
+*.spec
+*.exe
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Config
+pin.conf
+
+# System
+.DS_Store
+Thumbs.db
