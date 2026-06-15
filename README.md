@@ -1,4 +1,4 @@
-# 🎵 PC Media Remote
+# 🎵 iOS-Windows Media Remote
 
 **iPhone 浏览器控制 Windows 电脑媒体播放** — 无需安装 App，扫码即用。
 
