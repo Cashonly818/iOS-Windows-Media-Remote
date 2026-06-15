@@ -1,6 +1,6 @@
 # 🎵 iOS-Windows Media Remote
 
-**iPhone 浏览器控制 Windows 电脑媒体播放** — 无需安装 App，扫码即用。
+**iPhone/iPad 浏览器控制 Windows 电脑媒体播放** — 无需安装 App，扫码即用。
 
 > iOS Safari 打开 → 遥控 Windows 上的 Spotify / 网易云 / QQ音乐 / PotPlayer / YouTube / VLC …
 
