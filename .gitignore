@@ -1,8 +1,8 @@
 # Build
-dist/
+# dist/ - allow exe
 build/
 *.spec
-*.exe
+# *.exe - uploaded as release asset
 
 # Python
 __pycache__/
