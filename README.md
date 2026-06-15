@@ -51,13 +51,13 @@
 
 ### 方式一：双击运行（推荐）
 
-下载 [PC_Media_Remote.exe](https://github.com/your/releases) → 双击 → 浏览器弹出二维码 → 手机扫码
+下载 [PC_Media_Remote.exe](https://github.com/Cashonly818/iOS-Windows-Media-Remote/releases) → 双击 → 浏览器弹出二维码 → 手机扫码
 
 ### 方式二：Python 源码运行
 
 ```bash
 # 环境: Python 3.12+, Windows 10/11
-git clone https://github.com/your/PC-Media-Remote.git
+git clone https://github.com/Cashonly818/iOS-Windows-Media-Remote.git
 cd PC-Media-Remote/server
 pip install -r requirements.txt
 python app.py
