@@ -92,7 +92,9 @@ def api_status():
 
     song_info = netease_ctrl.get_current_song()
     progress = media_ctrl.get_progress_info()
-    is_playing = progress['playing']  # 仅由按键跟踪决定, 不合并其他来源
+    is_playing = progress['playing']
+    if song_info.get('playing') and netease_ctrl.is_available:
+        is_playing = song_info['playing']
 
     smtc_dur = song_info.get('duration', 0)
     smtc_pos = song_info.get('position', 0)

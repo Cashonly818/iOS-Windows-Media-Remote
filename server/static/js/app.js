@@ -604,9 +604,9 @@ function connectWebSocket() {
             // 心跳 (每 30 秒)
             STATE.ws._heartbeat = setInterval(() => {
                 if (STATE.ws && STATE.ws.readyState === WebSocket.OPEN) {
-                    STATE.ws.send(JSON.stringify({ action: 'ping' }));
+                    STATE.ws.send(JSON.stringify({ action: 'get_status' }));
                 }
-            }, 30000);
+            }, 1000);
         };
         STATE.ws.onmessage = (event) => {
             try {
@@ -651,7 +651,7 @@ function disconnectWebSocket() {
 function startPolling() {
     stopPolling();
     fetchStatus();  // 立即拉一次
-    STATE.pollTimer = setInterval(fetchStatus, 2000);  // 每 2 秒轮询
+    STATE.pollTimer = setInterval(fetchStatus, 1000);  // 每 2 秒轮询
 }
 
 function stopPolling() {
@@ -737,10 +737,33 @@ function updateUIFromStatus(data) {
     updateHeaderDot();
 }
 
+let lastCoverVersion = '';
+async function loadCover() {
+    try {
+        const resp = await fetch(STATE.serverUrl + '/api/netease/cover');
+        const data = await resp.json();
+        if (data.ok && data.cover) {
+            const v = data.cover.substring(0, 40);
+            if (v === lastCoverVersion) return;
+            lastCoverVersion = v;
+            DOM.coverImg.src = 'data:image/jpeg;base64,' + data.cover;
+            DOM.coverImg.classList.remove('hidden');
+            DOM.coverPlaceholder.classList.add('hidden');
+        } else {
+            lastCoverVersion = '';
+            DOM.coverImg.classList.add('hidden');
+            DOM.coverPlaceholder.classList.remove('hidden');
+        }
+    } catch (e) {}
+}
+
 function updateSongUI(song) {
     DOM.songTitle.textContent = song.title || '未在播放';
     DOM.songArtist.textContent = song.artist || '';
     DOM.songSource.textContent = song.source || '';
+
+    if (song.title) { loadCover(); }
+    else { lastCoverVersion = ''; DOM.coverImg.classList.add('hidden'); DOM.coverPlaceholder.classList.remove('hidden'); }
 
     // 播放状态指示
     if (song.playing) {
@@ -760,7 +783,7 @@ function updateSongUI(song) {
     const dur = song.duration || 0;
     if (dur > 0) {
         DOM.progressBar.value = Math.min(100, (pos / dur) * 100);
-        DOM.timeTotal.textContent = formatTime(dur);
+        DOM.timeTotal.textContent = "-" + formatTime(Math.max(0, dur - pos));
     } else if (pos > 0) {
         // 时长未知: 假设 4 分钟歌曲, 显示进度在 0-50% 范围
         DOM.progressBar.value = Math.min(50, pos / 4);

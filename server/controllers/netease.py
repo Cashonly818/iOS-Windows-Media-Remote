@@ -94,8 +94,8 @@ class NeteaseController:
             if not win32gui.IsWindowVisible(hwnd):
                 return True
             title = win32gui.GetWindowText(hwnd)
-            if not title or len(title) < 2:
-                return True
+            if not title or len(title) < 2: return True
+            if 'PC Media Remote' in title or 'PC Remote' in title: return True
             try:
                 _, pid = win32process.GetWindowThreadProcessId(hwnd)
                 proc = psutil.Process(pid)
@@ -188,9 +188,7 @@ class NeteaseController:
                     # 没有 SMTC 会话时只清除 SMTC 数据，保留窗口标题
                     with self._cache_lock:
                         c = self._cache
-                        c.pop('position', None)
-                        c.pop('duration', None)
-                        c.pop('smbc_playing', None)
+                        for k in ('position','duration','smbc_playing','smtc_active','smtc_title','smtc_artist','cover'): self._cache.pop(k, None)
             except Exception as e:
                 pass
             await asyncio.sleep(1)
@@ -210,23 +208,30 @@ class NeteaseController:
             props = await session.try_get_media_properties_async()
             title = props.title or ''
             artist = props.artist or ''
-
+            skip = ['PC Media Remote','PC Remote','Media Remote','Chrome','Edge','Firefox','Bing','New Tab']
+            if any(w in (title or '') for w in skip): title = ''
+            if any(w in (artist or '') for w in skip): artist = ''
             source = session.source_app_user_model_id or ''
 
+            cover_b64 = None
+            try:
+                if props.thumbnail:
+                    stream = await props.thumbnail.open_read_async()
+                    if stream and 0 < stream.size < 300000:
+                        from winsdk.windows.storage.streams import DataReader
+                        r = DataReader(stream); n = await r.load_async(stream.size)
+                        buf = bytearray(n); r.read_bytes(buf)
+                        cover_b64 = base64.b64encode(bytes(buf)).decode('utf-8')
+            except Exception: pass
+
+            smtc_data = {'position': pos, 'duration': dur if dur > 0 else pos*2,
+                         'smbc_playing': is_playing, 'smtc_active': True}
+            if cover_b64: smtc_data['cover'] = cover_b64
+            if title: smtc_data['smtc_title'] = title
+            if artist: smtc_data['smtc_artist'] = artist
+            if source: smtc_data['source'] = source.split('.')[-1] if '.' in source else source
             with self._cache_lock:
-                c = self._cache
-                # SMTC 数据 (精确)
-                c['position'] = pos
-                c['duration'] = dur if dur > 0 else pos * 2  # fallback
-                c['smbc_playing'] = is_playing
-                c['smtc_active'] = True
-                # 如果窗口标题没抓到歌名，用 SMTC 的
-                if not c.get('title') and title:
-                    c['title'] = title
-                if not c.get('artist') and artist:
-                    c['artist'] = artist
-                if not c.get('source') and source:
-                    c['source'] = source.split('.')[-1] if '.' in source else source
+                self._cache.update(smtc_data)
         except Exception:
             pass
 
@@ -247,8 +252,8 @@ class NeteaseController:
         is_playing = c.get('smbc_playing')  # None 表示 SMTC 未报告
 
         return {
-            'title': c.get('title', ''),
-            'artist': c.get('artist', ''),
+            'title': c.get('smtc_title') or c.get('title', ''),
+            'artist': c.get('smtc_artist') or c.get('artist', ''),
             'album': c.get('album', ''),
             'playing': True if is_playing else False,  # 仅 SMTC 可信
             'position': c.get('position', 0),
@@ -283,7 +288,7 @@ class NeteaseController:
             return False
 
     def get_album_cover(self) -> Optional[str]:
-        return None
+        return self._cache.get("cover")
 
     def shutdown(self):
         self._running = False
